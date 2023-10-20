@@ -46,7 +46,8 @@ async def get_ip(request: Request):
 
   # Get the IP address of the Azure App Service instance.
   hostname,app_service_ip = get_azure_app_service_ip()
-
+  headers = dict(request.headers)
   inbound_ip = request.headers.get("X-Real-IP", None)
   # Return the client, destination, and Azure App Service IP addresses.
-  return {"client_ip": client_ip, "destination_ip": destination_ip, "app_service_ip": app_service_ip,"hostname":hostname,"inbound_ip":inbound_ip}
+  return {"client_ip": client_ip, "destination_ip": destination_ip, "app_service_ip": app_service_ip,"hostname":hostname,"inbound_ip":inbound_ip,
+          "headers": headers}
