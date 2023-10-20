@@ -14,14 +14,24 @@ app.add_middleware(
     allow_methods=["*"],  # You can specify specific HTTP methods if needed
     allow_headers=["*"],  # You can specify specific headers if needed
 )
+import socket
+
+def get_azure_app_service_ip():
+  """Returns the IP address of the Azure App Service instance."""
+  hostname = socket.gethostname()
+  app_service_ip = socket.gethostbyname(hostname)
+  return app_service_ip
 
 @app.get("/getip")
 async def get_ip(request: Request):
-    # Get the IP address of the client that is making the request.
-    client_ip = request.client.host
+  # Get the IP address of the client that is making the request.
+  client_ip = request.client.host
 
-    # Get the IP address of the destination server.
-    destination_ip = request.headers.get("X-Forwarded-For", client_ip)
+  # Get the IP address of the destination server.
+  destination_ip = request.headers.get("X-Forwarded-For", client_ip)
 
-    # Return the client and destination IP addresses.
-    return {"client_ip": client_ip, "destination_ip": destination_ip}
+  # Get the IP address of the Azure App Service instance.
+  app_service_ip = get_azure_app_service_ip()
+
+  # Return the client, destination, and Azure App Service IP addresses.
+  return {"client_ip": client_ip, "destination_ip": destination_ip, "app_service_ip": app_service_ip}
