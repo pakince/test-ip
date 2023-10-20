@@ -32,7 +32,7 @@ def get_inbound_ip_address():
   """
 
   try:
-    return os.environ['WEBSITE_EXTERNAL_IP']
+    return os.environ['X-Real-IP']
   except KeyError:
     return None
 
@@ -42,11 +42,11 @@ async def get_ip(request: Request):
   client_ip = request.client.host
 
   # Get the IP address of the destination server.
-  destination_ip = request.headers.get("X-Forwarded-For", client_ip)
+  destination_ip = request.headers.get("X-Forwarded-For", None)
 
   # Get the IP address of the Azure App Service instance.
   hostname,app_service_ip = get_azure_app_service_ip()
 
-  inbound_ip = get_inbound_ip_address()
+  inbound_ip = request.headers.get("X-Real-IP", None)
   # Return the client, destination, and Azure App Service IP addresses.
   return {"client_ip": client_ip, "destination_ip": destination_ip, "app_service_ip": app_service_ip,"hostname":hostname,"inbound_ip":inbound_ip}
