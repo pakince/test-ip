@@ -22,6 +22,20 @@ def get_azure_app_service_ip():
   app_service_ip = socket.gethostbyname(hostname)
   return hostname,app_service_ip
 
+import os
+
+def get_inbound_ip_address():
+  """Gets the inbound IP address of the current machine.
+
+  Returns:
+    A string containing the inbound IP address, or `None` if the inbound IP address cannot be determined.
+  """
+
+  try:
+    return os.environ['WEBSITE_EXTERNAL_IP']
+  except KeyError:
+    return None
+
 @app.get("/getip")
 async def get_ip(request: Request):
   # Get the IP address of the client that is making the request.
@@ -33,5 +47,6 @@ async def get_ip(request: Request):
   # Get the IP address of the Azure App Service instance.
   hostname,app_service_ip = get_azure_app_service_ip()
 
+  inbound_ip = get_inbound_ip_address()
   # Return the client, destination, and Azure App Service IP addresses.
-  return {"client_ip": client_ip, "destination_ip": destination_ip, "app_service_ip": app_service_ip,"hostname":hostname}
+  return {"client_ip": client_ip, "destination_ip": destination_ip, "app_service_ip": app_service_ip,"hostname":hostname,"inbound_ip":inbound_ip}
