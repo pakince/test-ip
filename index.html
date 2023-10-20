@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Get Client and Destination IP Addresses</title>
+</head>
+<body>
+
+<p>Client IP address: <span id="client-ip"></span></p>
+<p>Destination IP address: <span id="destination-ip"></span></p>
+
+<script>
+// Function to fetch and display IP addresses
+async function fetchAndDisplayIP() {
+  try {
+    // Get the client and destination IP addresses from the API.
+    const response = await fetch('http://127.0.0.1:8000/getip');
+    const data = await response.json();
+
+    // Display the client and destination IP addresses.
+    document.querySelector('#client-ip').innerHTML = data.client_ip;
+    document.querySelector('#destination-ip').innerHTML = data.destination_ip;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+}
+
+// Execute the function after the DOM has loaded.
+document.addEventListener('DOMContentLoaded', fetchAndDisplayIP);
+</script>
+
+</body>
+</html>
