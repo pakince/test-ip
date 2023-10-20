@@ -20,7 +20,7 @@ def get_azure_app_service_ip():
   """Returns the IP address of the Azure App Service instance."""
   hostname = socket.gethostname()
   app_service_ip = socket.gethostbyname(hostname)
-  return app_service_ip
+  return hostname,app_service_ip
 
 @app.get("/getip")
 async def get_ip(request: Request):
@@ -31,7 +31,7 @@ async def get_ip(request: Request):
   destination_ip = request.headers.get("X-Forwarded-For", client_ip)
 
   # Get the IP address of the Azure App Service instance.
-  app_service_ip = get_azure_app_service_ip()
+  hostname,app_service_ip = get_azure_app_service_ip()
 
   # Return the client, destination, and Azure App Service IP addresses.
-  return {"client_ip": client_ip, "destination_ip": destination_ip, "app_service_ip": app_service_ip}
+  return {"client_ip": client_ip, "destination_ip": destination_ip, "app_service_ip": app_service_ip,"hostname":hostname}
